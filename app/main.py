@@ -225,11 +225,12 @@ if __name__ == "__main__":
     if parms.multi:
         if parms.command:
             try:
-                targets = Path(__file__).parent.resolve().joinpath("config","targets.ini")
+                targets_dir = Path(__file__).parent.resolve().joinpath("config")
+                targets = targets_dir.joinpath("targets.ini")
                 data = [line.strip() for line in open(targets, 'r') if not line.strip()[0] == "#"]
                 data = list(set(data))
                 targets.unlink()
-                targets.mkdir(parents=True, exist_ok=True)
+                targets_dir.mkdir(parents=True, exist_ok=True)
                 with open(targets, 'w') as file:
                     file.write("\n".join(str(item) for item in data))
                 
