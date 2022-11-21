@@ -92,17 +92,8 @@ def _quit():
     pc.printout("Goodbye!\n", pc.RED)
     sys.exit(0)
 
-def api_process(parms):
+def api_process(parms, readliner):
     global commands
-    
-    if os.name == 'nt':
-        from pyreadline3 import Readline
-        readliner = Readline()
-        pc.printout("Windows Detected!\n", pc.RED)
-    else:
-        import gnureadline
-        readliner = gnureadline    
-        pc.printout("Linux Detected!\n", pc.RED)
     
     api = instagent(parms.identity, 
                     parms.file, 
@@ -220,6 +211,15 @@ if __name__ == "__main__":
     parms.multi = os.environ.get("INSTAGENT_MULTI", args.multi)
     parms.timeout = os.environ.get("INSTAGENT_TIMEOUT", args.timeout)
     
+    if os.name == 'nt':
+        from pyreadline3 import Readline
+        readliner = Readline()
+        pc.printout("Windows Detected!\n", pc.RED)
+    else:
+        import gnureadline
+        readliner = gnureadline    
+        pc.printout("Linux Detected!\n", pc.RED)
+    
     if parms.multi:
         if parms.command:
             try:
@@ -244,11 +244,11 @@ if __name__ == "__main__":
                 pc.printout("Target: {}\n".format(target), pc.GREEN)            
                 pc.printout("*************************************************************************\n", pc.GREEN)
                 parms.identity = target
-                api_process(parms)
+                api_process(parms, readliner)
             pc.printout("All targets completed!\n", pc.RED)    
             pc.printout("Goodbye!\n", pc.RED)
         else:
             pc.printout('Error: To use Multi Target (-m), a fixed Command (-c) needs to be passed too!\n', pc.RED)
             sys.exit(0)
     else:
-        api_process(parms)
+        api_process(parms, readliner)
