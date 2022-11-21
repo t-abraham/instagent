@@ -147,10 +147,8 @@ def api_process(parms):
 
 
     signal.signal(signal.SIGINT, signal_handler)
-    print (0)
     readliner.parse_and_bind("tab: complete")
     readliner.set_completer(completer)
-    print (1)
     
 
     if not parms.command:
