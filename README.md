@@ -1,8 +1,10 @@
 # InstAgent 🔎📸
 
 InstAgent is a tool on Instagram to collect, analyze, and run reconnaissance. 
+
 The original developer is [Datalux](https://github.com/Datalux).
-Since the [original version](https://github.com/Datalux/Osintgram) is more or less inactive, I took the initiative to continue with the developmets.
+
+Since the [original version](https://github.com/Datalux/Osintgram) is more or less inactive, I took the initiative to continue with the developments.
 
 <p align="center">
 <img align="center" src=".img/carbon.png" width="900">
