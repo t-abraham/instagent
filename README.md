@@ -56,11 +56,11 @@ You can find detailed commands usage [here](doc/COMMANDS.md).
 
 1. Fork/Clone/Download this repo
 
-    `git clone `
+    `git clone https://github.com/t-abraham/instagent.git`
 
 2. Navigate to the directory
 
-    `cd InstAgent`
+    `cd instagent`
 
 3. Create a virtual environment for this project
 
