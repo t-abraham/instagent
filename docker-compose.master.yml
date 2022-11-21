@@ -1,0 +1,21 @@
+version: "3.5"
+services:  
+  instagent:
+    image: ${IMAGE_URL}:${IMAGE_TYPE}
+    container_name: ${SERVICE_NAME}
+    restart: always
+    logging:
+      options:
+        max-size: 50m
+    env_file:
+      - .env
+    volumes:
+      - ./output:/home/instagent/output
+    networks:
+      - administration
+    labels:
+      - "com.centurylinklabs.watchtower.enable=${AUTO_UPDATE_MODE}"
+networks:
+  administration:
+    name: administration
+    driver: bridge

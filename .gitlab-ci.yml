@@ -1,0 +1,109 @@
+# This is a GitLab CI configuration to build the project as a docker image
+# The file is generic enough to be dropped in a project containing a working Dockerfile
+#trst
+
+image: docker:stable
+
+stages:
+  - devops
+  - release
+
+variables:
+  # fill those if you have a proxy in your environment
+  http_proxy: ""
+  https_proxy: ""
+  no_proxy: ""
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+# Use this if your GitLab runner does not use socket binding
+services:
+  - docker:stable-dind
+
+before_script:
+  # docker login asks for the password to be passed through stdin for security
+  # we use $CI_JOB_TOKEN here which is a special token provided by GitLab
+  - echo -n $CI_JOB_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+
+# Build Docker Image for Master branch as Latest
+Build-Master-DevOps:
+  stage: devops
+  only:
+    refs:
+      # We want this job to be run on tags only.
+      - main
+    changes:
+      - Dockerfile
+      - app/**/*
+      - .gitlab-ci.yml
+  script:
+    # fetches the latest image (not failing if image is not found)
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:rollback || true
+    - apk update && apk add git
+    - echo $CI_REPOSITORY_URL
+    - git clone $CI_REPOSITORY_URL gitclone
+    # builds the project, passing proxy variables, and vcs vars for LABEL
+    # notice the cache-from, which is going to use the image we just pulled locally
+    # the built image is tagged locally with the commit SHA, and then pushed to 
+    # the GitLab registry
+    - >
+      docker build
+      --pull
+      --build-arg http_proxy=$http_proxy
+      --build-arg https_proxy=$https_proxy
+      --build-arg no_proxy=$no_proxy
+      --build-arg VCS_REF=$CI_COMMIT_SHORT_SHA
+      --build-arg VCS_URL=$CI_PROJECT_URL
+      --cache-from $CI_REGISTRY_IMAGE:latest
+      --tag $CI_REGISTRY_IMAGE:latest
+      .
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - docker tag $CI_REGISTRY_IMAGE:latest $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA || true
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - docker push $CI_REGISTRY_IMAGE:rollback || true
+
+# Build Docker Image for Tags as Tag    
+Build-Master-Release:
+  stage: release
+  only:
+    refs:
+      # We want this job to be run on tags only.
+      - main
+    changes:
+      - Dockerfile
+      - app/**/*
+      - .gitlab-ci.yml
+  #when: manual
+  allow_failure: false
+  script:
+    # fetches the DevOps image
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    # fetches the latest stable image (not failing if image is not found)
+    - docker pull $CI_REGISTRY_IMAGE:stable || true
+    # tag the pulled stable version as stable_rollback
+    - docker tag $CI_REGISTRY_IMAGE:stable $CI_REGISTRY_IMAGE:stable_rollback || true
+    # remove tag from the pulled stable
+    - docker image rm -f $CI_REGISTRY_IMAGE:stable || true
+    # tag the pulled DevOps version as stable
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE:stable
+    #- apk update && apk add git
+    #- echo $CI_REPOSITORY_URL
+    #- git clone $CI_REPOSITORY_URL gitclone
+    ## builds the project, passing proxy variables, and vcs vars for LABEL
+    ## notice the cache-from, which is going to use the image we just pulled locally
+    ## the built image is tagged locally with the commit SHA, and then pushed to 
+    ## the GitLab registry
+    #- >
+    #  docker build
+    #  --pull
+    #  --build-arg http_proxy=$http_proxy
+    #  --build-arg https_proxy=$https_proxy
+    #  --build-arg no_proxy=$no_proxy
+    #  --build-arg VCS_REF=$CI_COMMIT_SHORT_SHA
+    #  --build-arg VCS_URL=$CI_PROJECT_URL
+    #  --cache-from $CI_REGISTRY_IMAGE:$CI_CONCURRENT_PROJECT_ID
+    #  --tag $CI_REGISTRY_IMAGE:stable
+    #  .
+    - docker push $CI_REGISTRY_IMAGE:stable
+    - docker push $CI_REGISTRY_IMAGE:stable_rollback || true
