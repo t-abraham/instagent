@@ -953,6 +953,8 @@ class instagent:
             data.extend(results.get('items', []))
             next_max_id = results.get('next_max_id')
 
+        max_download = len(data) if limit == -1 else limit
+
         try:
             for item in data:
                 if counter == limit:
@@ -964,7 +966,7 @@ class instagent:
                     file_name = self.output_dir.joinpath(self.target + "_" + photo_id + ".jpg")                    
                     if not file_name.exists():
                         urllib.request.urlretrieve(url, file_name)
-                    sys.stdout.write("\rDownloaded %i" % counter)
+                    sys.stdout.write("\rDownloaded %i of %i" % (counter,max_download))
                     sys.stdout.flush()
                 else:
                     carousel = item["carousel_media"]
@@ -977,7 +979,7 @@ class instagent:
                         file_name = self.output_dir.joinpath(self.target + "_" + photo_id + ".jpg")                    
                         if not file_name.exists():
                             urllib.request.urlretrieve(url, file_name)
-                        sys.stdout.write("\rDownloaded %i" % counter)
+                        sys.stdout.write("\rDownloaded %i of %i" % (counter,max_download))
                         sys.stdout.flush()
 
         except AttributeError:
