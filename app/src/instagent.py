@@ -943,6 +943,7 @@ class instagent:
 
         data = []
         counter = 0
+        max_download = 0
 
         result = self.api.user_feed(str(self.target_id))
         data.extend(result.get('items', []))
@@ -952,8 +953,17 @@ class instagent:
             results = self.api.user_feed(str(self.target_id), max_id=next_max_id)
             data.extend(results.get('items', []))
             next_max_id = results.get('next_max_id')
-
-        max_download = len(data) if limit == -1 else limit
+        
+        if limit == -1:
+            for item in data:
+                if "image_versions2" in item:
+                    max_download = max_download + 1
+                else:
+                    carousel = item["carousel_media"]
+                    for i in carousel:
+                        max_download = max_download + 1
+        else:
+            max_download = limit
 
         try:
             for item in data:

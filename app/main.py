@@ -251,7 +251,7 @@ if __name__ == "__main__":
                 pc.printout("Target: {}\n".format(target), pc.GREEN)            
                 pc.printout("*************************************************************************\n", pc.GREEN)
                 parms.identity = target                
-                init_api(parms) if api is None else api.change_target(target)
+                init_api(parms) if api is None else api.setTarget(target)
                 api_process(parms, readliner)
             pc.printout("All targets completed!\n", pc.RED)    
             pc.printout("Goodbye!\n", pc.RED)
