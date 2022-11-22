@@ -83,7 +83,10 @@ class instagent:
         self.is_private = user['is_private']
         self.following = self.check_following()
         self.__printTargetBanner__()
-        self.output_dir = self.output_dir.joinpath(str(self.target))
+        if self.output_dir.name == "output":
+            self.output_dir = self.output_dir.joinpath(str(self.target))
+        else:
+            self.output_dir = self.output_dir.parent.joinpath(str(self.target))
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def __get_feed__(self):
