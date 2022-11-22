@@ -247,6 +247,7 @@ if __name__ == "__main__":
                 sys.exit(0)
                 
             for target in data:
+                pc.printout("\n", pc.GREEN)
                 pc.printout("*************************************************************************\n", pc.GREEN)            
                 pc.printout("Target: {}\n".format(target), pc.GREEN)            
                 pc.printout("*************************************************************************\n", pc.GREEN)

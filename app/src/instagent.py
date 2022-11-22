@@ -21,7 +21,6 @@ from src import config
 
 class instagent:
     api = None
-    api2 = None
     geolocator = Nominatim(user_agent="http")
     user_id = None
     target_id = None
@@ -964,7 +963,9 @@ class instagent:
                         max_download = max_download + 1
         else:
             max_download = limit
-
+        
+        pc.printout("Woohoo! We found " + str(max_download) + " photos\n", pc.GREEN)
+        
         try:
             for item in data:
                 if counter == limit:
