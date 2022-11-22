@@ -94,54 +94,12 @@ def _quit():
 
 def api_process(parms, readliner):
     global commands
-    
-    api = instagent(parms.identity, 
-                    parms.file, 
-                    parms.json, 
-                    parms.command, 
-                    parms.output, 
-                    parms.cookies, 
-                    parms.timeout,
-                    Path(__file__).parent.resolve()
-                    )
-
-    commands = {
-        'list':             cmdlist,
-        'help':             cmdlist,
-        'quit':             _quit,
-        'exit':             _quit,
-        'addrs':            api.get_addrs,
-        'cache':            api.clear_cache,
-        'captions':         api.get_captions,
-        "commentdata":      api.get_comment_data,
-        'comments':         api.get_total_comments,
-        'followers':        api.get_followers,
-        'followings':       api.get_followings,
-        'fwersemail':       api.get_fwersemail,
-        'fwingsemail':      api.get_fwingsemail,
-        'fwersnumber':      api.get_fwersnumber,
-        'fwingsnumber':     api.get_fwingsnumber,
-        'hashtags':         api.get_hashtags,
-        'info':             api.get_user_info,
-        'likes':            api.get_total_likes,
-        'mediatype':        api.get_media_type,
-        'photodes':         api.get_photo_description,
-        'photos':           api.get_user_photo,
-        'propic':           api.get_user_propic,
-        'stories':          api.get_user_stories,
-        'tagged':           api.get_people_tagged_by_user,
-        'target':           api.change_target,
-        'wcommented':       api.get_people_who_commented,
-        'wtagged':          api.get_people_who_tagged,
-        'timeout':          api.set_timeout,
-    }
-
+    global api
 
     signal.signal(signal.SIGINT, signal_handler)
     readliner.parse_and_bind("tab: complete")
     readliner.set_completer(completer)
     
-
     if not parms.command:
         printlogo()
 
@@ -186,7 +144,56 @@ class parameters():
     multi = None
     timeout = None
 
-if __name__ == "__main__":       
+def init_api(parms):
+    
+    global api
+    global commands
+    
+    api = instagent(parms.identity, 
+                    parms.file, 
+                    parms.json, 
+                    parms.command, 
+                    parms.output, 
+                    parms.cookies, 
+                    parms.timeout,
+                    Path(__file__).parent.resolve()
+                    )
+
+    commands = {
+        'list':             cmdlist,
+        'help':             cmdlist,
+        'quit':             _quit,
+        'exit':             _quit,
+        'addrs':            api.get_addrs,
+        'cache':            api.clear_cache,
+        'captions':         api.get_captions,
+        "commentdata":      api.get_comment_data,
+        'comments':         api.get_total_comments,
+        'followers':        api.get_followers,
+        'followings':       api.get_followings,
+        'fwersemail':       api.get_fwersemail,
+        'fwingsemail':      api.get_fwingsemail,
+        'fwersnumber':      api.get_fwersnumber,
+        'fwingsnumber':     api.get_fwingsnumber,
+        'hashtags':         api.get_hashtags,
+        'info':             api.get_user_info,
+        'likes':            api.get_total_likes,
+        'mediatype':        api.get_media_type,
+        'photodes':         api.get_photo_description,
+        'photos':           api.get_user_photo,
+        'propic':           api.get_user_propic,
+        'stories':          api.get_user_stories,
+        'tagged':           api.get_people_tagged_by_user,
+        'target':           api.change_target,
+        'wcommented':       api.get_people_who_commented,
+        'wtagged':          api.get_people_who_tagged,
+        'timeout':          api.set_timeout,
+    }
+
+if __name__ == "__main__":
+    
+    api = None
+    commands = {}       
  
     parms = parameters()
     parser = argparse.ArgumentParser(description='Osintgram is a OSINT tool on Instagram. It offers an interactive shell '
@@ -243,7 +250,8 @@ if __name__ == "__main__":
                 pc.printout("*************************************************************************\n", pc.GREEN)            
                 pc.printout("Target: {}\n".format(target), pc.GREEN)            
                 pc.printout("*************************************************************************\n", pc.GREEN)
-                parms.identity = target
+                parms.identity = target                
+                init_api(parms) if api is None else api.change_target(target)
                 api_process(parms, readliner)
             pc.printout("All targets completed!\n", pc.RED)    
             pc.printout("Goodbye!\n", pc.RED)
@@ -251,4 +259,5 @@ if __name__ == "__main__":
             pc.printout('Error: To use Multi Target (-m), a fixed Command (-c) needs to be passed too!\n', pc.RED)
             sys.exit(0)
     else:
+        init_api(parms)
         api_process(parms, readliner)
