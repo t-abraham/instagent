@@ -1,45 +1,28 @@
 # Commands list and usage
 ```
-- FILE=y/n			Enable/disable output in a '<target username>_<command>.txt' file'
-- JSON=y/n			Enable/disable export in a '<target username>_<command>.json' file'
-- addrs				Get all registered addressed by target photos
-- cache				Clear cache of the tool
-- captions			Get target's photos captions
-- commentdata		Get a list of all the comments on the target's posts
-- comments			Get total comments of target's posts
-- followers			Get target followers
-- followings		Get users followed by target
-- fwersemail		Get email of target followers
-- fwingsemail		Get email of users followed by target
-- fwersnumber		Get phone number of target followers
-- fwingsnumber		Get phone number of users followed by target
-- hashtags			Get hashtags used by target
-- info				Get target info
-- likes				Get total likes of target's posts
-- mediatype			Get target's posts type (photo or video)
-- photodes			Get description of target's photos
-- photos			Download target's photos in output folder
-- propic			Download target's profile picture
-- stories			Download target's stories
-- tagged			Get list of users tagged by target
-- target			Set new target
-- wcommented		Get a list of user who commented target's photos
-- wtagged			Get a list of user who tagged target
-- timeout			Set input timeout in seconds
+- FILE=y/n              Enable/disable output in a '<target username>_<command>.txt' file'
+- JSON=y/n              Enable/disable export in a '<target username>_<command>.json' file'
+- quit                  Quit/exit the system
+- exit                  Quit/exit the system
+- locations             Get all registered addressed by target photos
+- cache                 Clear cache of the system
+- comments              Get a list of all the comments on the target's each posts
+- likes                 Get a list of count of likes for target's each posts
+- captions              Get a list of captions for target's each posts
+- followers             Get a list of followers for target's each posts
+- followings            Get a list of users followed by the target for target's each posts
+- detailedfollowers		Get a list of followers' details for target's each posts
+- detailedfollowings	Get a list of users' details followed by the target for target's each posts
+- hashtags              Get a list of hashtags used by the target
+- hastagscounts         Get a count of hashtags used by the target
+- info                  Get user information of the target
+- mediacounts           Get a count of the total media posts by the target (photos, videos or reels)
+- mediastore            Store the total media detected from the target locally in the system
+- commenters            Get a list of users who commented on the target's posts
+- tagged                Get a list of users tagged in the target's posts
+- newtarget             Change target user
+- timeout               Set a timeout in seconds for commands to execute
 ```
-
-### addrs
-Return a list with address (GPS) tagged by target in his photos.
-The list has post, address and date fields.
-
-### captions 
-Return a list of all captions used by target in his photos.
-
-### comments
-Return the total number of comments in target's posts
-
-### exit
-Exit from Osintgram
 
 ### FILE
 Can set preference to save commands output in output folder. It save output in `<target username>_<command>.txt` file.
@@ -48,26 +31,91 @@ With `FILE=y` you can enable saving in file.
 
 With `FILE=n` you can disable saving in file.
 
+### JSON
+Can set preference to export commands output as JSON in output folder. It save output in `<target username>_<command>.JSON` file.
+
+With `JSON=y` you can enable JSON exporting.
+
+With `JSON=n` you can disable JSON exporting.
+
+### exit/quit
+Exit from InstAgent.
+
+### locations
+Return a list with address (GPS) tagged by target in his photos.
+The list has post, address and date fields.
+
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: locations
+For how many recent posts? (default 10):
+```
+
+### cache
+Clear cache of the system for the given credentials.
+
+### comments
+Get a list of all the comments on the target's each posts.
+
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: comments
+For how many recent posts? (default 10):
+```
+
+### likes
+Get a list of count of likes for target's each posts.
+
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: likes
+For how many recent posts? (default 10):
+```
+
+### captions
+Get a list of captions for target's each posts.
+
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: captions
+For how many recent posts? (default 10):
+```
+
 ### followers
-Return a list with target followers with id, nickname and full name
+Get a list of followers for target's each posts.
 
 ### followings
-Return a list with users followed by target with id, nickname and full name
+Get a list of users followed by the target for target's each posts.
 
-### fwersemail
-Return a list of emails of target followers
+### detailedfollowers
+Get a list of followers' details for target's each posts.
 
-### fwingsemail
-Return a list of emails of user followed by target
-
-### fwersnumber
-Return a list of phone number of target followers
-
-### fwingsnumber
-Return a list of phone number of user followed by target
+### detailedfollowings
+Get a list of users' details followed by the target for target's each posts.
 
 ### hashtags
-Return a list with all hashtag used by target in his photos
+Get a list of hashtags used by the target.
+
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: hashtags
+For how many recent posts? (default 10):
+```
+
+### hastagscounts
+Get a count of hashtags used by the target.
+
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: hastagscounts
+For how many recent posts? (default 10):
+```
 
 ### info
 Show target info like:
@@ -87,47 +135,48 @@ Show target info like:
 - Address Street (if available)
 - Contact phone number (if available)
 
-### JSON
-Can set preference to export commands output as JSON in output folder. It save output in `<target username>_<command>.JSON` file.
+### mediacounts
+Get a count of the total media posts by the target (photos, videos or reels).
 
-With `JSON=y` you can enable JSON exporting.
-
-With `JSON=n` you can disable JSON exporting.
-
-### likes
-Return the total number of likes in target's posts
-
-### list (or help)
-Show all commands available.
-
-### mediatype
-Return the number of photos and video shared by target
-
-### photodes
-Return a list with the description of the content of target's photos
-
-### photos
-Download all target's photos in output folder.
-When you run the command, script ask you how many photos you want to download. 
-Type ENTER to download all photos available or type a number to choose how many photos you want download.
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
 ```
-Run a command: photos
-How many photos you want to download (default all):
+Run a command: mediacounts
+For how many recent posts? (default 10):
 ```
 
-### propic
-Download target profile picture (HD if is available)
+### mediastore
+Store the total media detected from the target locally in the system.
 
-### stories
-Download all target's stories in output folder.
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: mediastore
+For how many recent posts? (default 10):
+```
 
-## tagged
-Return a list of users tagged by target with ID, username and full name
+### commenters
+Get a list of users who commented on the target's posts.
 
-## wcommented
-Return a list of users who commented target's photos sorted by number of comments
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: commenters
+For how many recent posts? (default 10):
+```
 
-## wtagged
-Return a list of users who tagged target sorted by number of photos
+### tagged
+Get a list of users tagged in the target's posts.
 
+When you run the command, script ask you how many recent media to be analysed for the action. 
+Type 0 for all available medias or any positive number for the number of recent medias. 
+```
+Run a command: tagged
+For how many recent posts? (default 10):
+```
 
+### newtarget
+Change target user.
+
+### timeout
+Set a timeout in seconds for to wait for user input before taking the default value (if requested).
