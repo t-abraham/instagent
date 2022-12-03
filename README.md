@@ -2,7 +2,7 @@
 
 InstAgent is a tool on Instagram to collect, analyze, and run reconnaissance. 
 
-The original developer is [Datalux](https://github.com/Datalux).
+The original idea is from [Datalux](https://github.com/Datalux).
 
 Since the [original version](https://github.com/Datalux/Osintgram) is more or less inactive, I took the initiative to continue with the developments.
 
@@ -21,30 +21,7 @@ InstAgent offers an interactive shell to perform analysis on Instagram account o
 <p align="center">
 <img align="center" src=".img/commands.png" width="900">
 </p>
-<!---
-```text
-- addrs           Get all registered addressed by target photos
-- captions        Get user's photos captions
-- comments        Get total comments of target's posts
-- followers       Get target followers
-- followings      Get users followed by target
-- fwersemail      Get email of target followers
-- fwingsemail     Get email of users followed by target
-- fwersnumber     Get phone number of target followers
-- fwingsnumber    Get phone number of users followed by target
-- hashtags        Get hashtags used by target
-- info            Get target info
-- likes           Get total likes of target's posts
-- mediatype       Get user's posts type (photo or video)
-- photodes        Get description of target's photos
-- photos          Download user's photos in output folder
-- propic          Download user's profile picture
-- stories         Download user's stories  
-- tagged          Get list of users tagged by target
-- wcommented      Get a list of user who commented target's photos
-- wtagged         Get a list of user who tagged target
-```
---->
+
 
 You can find detailed commands usage [here](doc/COMMANDS.md).
 
@@ -78,9 +55,14 @@ You can find detailed commands usage [here](doc/COMMANDS.md).
    - On Windows Powershell: `pip install -r .\app\requirements.txt`
    - On Linux and Git Bash: `pip install -r ./app/requirements.txt`
 
-6. Open the `credentials.ini` file in the `app -> config` folder and write your Instagram account username and password in the corresponding fields
-    
-    Alternatively, you can run the `make setup` command to populate this file for you.
+6. Setting up the application
+    * Main user credentials (please do not use your original Account)
+       - Open the `credentials.ini` file in the `app -> config` folder and write your account username and password in the corresponding fields
+    * (If you wish to do reconnaissance on multiple targets)
+       - Open the `targets.ini` file in the `app -> config` folder and write your target accounts' usernames per line.
+       <p align="center">
+           <img align="center" src=".img/multi_targets.png" width="900">
+       </p>
 
 7. Run the main.py script in one of two ways
 
@@ -90,6 +72,32 @@ You can find detailed commands usage [here](doc/COMMANDS.md).
     * Or execute your command straight away
        - On Windows Powershell: `python3 .\app\main.py <target username> --command <command>`
        - On Linux and Git Bash: `python3 ./app/main.py <target username> --command <command>`
+       
+8. Possible running aruguments (multiple arguments can be executed with a space " " inbetween):
+    *  On Windows Powershell:
+       - Target User: `python3 .\app\main.py <target username>`
+       - Login with new cookies: `python3 .\app\main.py -C`
+       - Enable auto JSON file saving: `python3 .\app\main.py -j`
+       - Enable auto TXT file saving: `python3 .\app\main.py -f`
+       - Auto Perform Command: `python3 .\app\main.py -c <command>`
+       - Custom Output Directory: `python3 .\app\main.py -o <output path>`
+       - Use of Multiple Targets: `python3 .\app\main.py -m`
+       - User Input timeout before taking default value: `python3 .\app\main.py -t <time in seconds>`   
+       - Default media counts for any commands: `python3 .\app\main.py -dc <number>`
+       - Default media types for any commands: `python3 .\app\main.py -dm <number>`
+       - Proxy settings: `python3 .\app\main.py -p <proxy url (http://username:password@147.123123.123:412345)>`
+    *  On Linux and Git Bash:
+       - Target User: `python3 ./app/main.py <target username>`
+       - Login with new cookies: `python3 ./app/main.py -C`
+       - Enable auto JSON file saving: `python3 ./app/main.py -j`
+       - Enable auto TXT file saving: `python3 ./app/main.py -f`
+       - Auto Perform Command: `python3 ./app/main.py -c <command>`
+       - Custom Output Directory: `python3 ./app/main.py -o <output path>`
+       - Use of Multiple Targets: `python3 ./app/main.py -m`
+       - User Input timeout before taking default value: `python3 ./app/main.py -t <time in seconds>` 
+       - Default media counts for any commands: `python3 ./app/main.py -dc <number>`
+       - Default media types for any commands: `python3 ./app/main.py -dm <number>`
+       - Proxy settings: `python3 ./app/main.py -p <proxy url (http://username:password@147.123123.123:412345)>`
 
 ## Docker Quick Start 🐳
 
@@ -183,4 +191,4 @@ You can propose a feature request opening an issue or a pull request.
 
 ## External library 🔗
 
-[Instagram API](https://github.com/ping/instagram_private_api)
+[instagrapi](https://github.com/adw0rd/instagrapi)

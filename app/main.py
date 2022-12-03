@@ -2,81 +2,59 @@
 
 from src.instagent import instagent
 import argparse
-from src import printcolors as pc
-from src import artwork
 import sys
 import signal
 import os
 from pathlib import Path 
-
-def printlogo():
-    pc.printout(artwork.ascii_art, pc.YELLOW)
-    pc.printout("\nVersion 1.0 - Developed by Tahasanul Abraham\n\n", pc.YELLOW)
-    pc.printout("Type 'list' to show all allowed commands\n")
-    pc.printout("Type 'FILE=y' to save results to files like '<target username>_<command>.txt (default is disabled)'\n")
-    pc.printout("Type 'FILE=n' to disable saving to files'\n")
-    pc.printout("Type 'JSON=y' to export results to a JSON files like '<target username>_<command>.json (default is "
-                "disabled)'\n")
-    pc.printout("Type 'JSON=n' to disable exporting to files'\n")
-
+from prettytable import PrettyTable
 
 def cmdlist():
-    pc.printout("FILE=y/n\t")
-    print("Enable/disable output in a '<target username>_<command>.txt' file'")
-    pc.printout("JSON=y/n\t")
-    print("Enable/disable export in a '<target username>_<command>.json' file'")
-    pc.printout("addrs\t\t")
-    print("Get all registered addressed by target photos")
-    pc.printout("cache\t\t")
-    print("Clear cache of the tool")
-    pc.printout("captions\t")
-    print("Get target's photos captions")
-    pc.printout("commentdata\t")
-    print("Get a list of all the comments on the target's posts")
-    pc.printout("comments\t")
-    print("Get total comments of target's posts")
-    pc.printout("followers\t")
-    print("Get target followers")
-    pc.printout("followings\t")
-    print("Get users followed by target")
-    pc.printout("fwersemail\t")
-    print("Get email of target followers")
-    pc.printout("fwingsemail\t")
-    print("Get email of users followed by target")
-    pc.printout("fwersnumber\t")
-    print("Get phone number of target followers")
-    pc.printout("fwingsnumber\t")
-    print("Get phone number of users followed by target")    
-    pc.printout("hashtags\t")
-    print("Get hashtags used by target")
-    pc.printout("info\t\t")
-    print("Get target info")
-    pc.printout("likes\t\t")
-    print("Get total likes of target's posts")
-    pc.printout("mediatype\t")
-    print("Get target's posts type (photo or video)")
-    pc.printout("photodes\t")
-    print("Get description of target's photos")
-    pc.printout("photos\t\t")
-    print("Download target's photos in output folder")
-    pc.printout("propic\t\t")
-    print("Download target's profile picture")
-    pc.printout("stories\t\t")
-    print("Download target's stories")
-    pc.printout("tagged\t\t")
-    print("Get list of users tagged by target")
-    pc.printout("target\t\t")
-    print("Set new target")
-    pc.printout("wcommented\t")
-    print("Get a list of user who commented target's photos")
-    pc.printout("wtagged\t\t")
-    print("Get a list of user who tagged target")
-    pc.printout("timeout\t\t")
-    print("Set input timeout in seconds")
-
+    global api
+    
+    t = PrettyTable()
+    
+    t.field_names = ['Command', 'Action']
+    t.align["Command"] = "l"
+    t.align["Action"] = "l"
+    
+    printcmdlist = {
+        "FILE=y/n"              :   "Enable/disable output in a '<target username>_<command>.txt' file'",
+        "JSON=y/n"              :   "Enable/disable export in a '<target username>_<command>.json' file'",
+        "quit"                  :   "Quit/exit the system",
+        "exit"                  :   "Quit/exit the system",
+        "locations"             :   "Get all registered addressed by target photos",
+        "cache"                 :   "Clear cache of the system",
+        "comments"              :   "Get a list of all the comments on the target's each posts",
+        "likes"                 :   "Get a list of count of likes for target's each posts",
+        "captions"              :   "Get a list of captions for target's each posts",
+        'followers'             :   "Get a list of followers for target's each posts",
+        'followings'            :   "Get a list of users followed by the target for target's each posts",        
+        'detailedfollowers'     :   "Get a list of followers' details for target's each posts",
+        'detailedfollowings'    :   "Get a list of users' details followed by the target for target's each posts" ,
+        'hastags'               :   "Get a list of hashtags used by the target" ,
+        'hastagscounts'         :   "Get a count of hashtags used by the target",
+        'info'                  :   "Get user information of the target", 
+        'mediacounts'           :   "Get a count of the total media posts by the target (photos, videos or reels)",
+        'mediastore'            :   "Store the total media detected from the target locally in the system",
+        'commenters'            :   "Get a list of users who commented on the target's posts",
+        'tagged'                :   "Get a list of users tagged in the target's posts",
+        'newtarget'             :   "Change target user",
+        'timeout'               :   "Set a timeout in seconds for to wait for user input before taking the default value",
+    }
+    
+    
+    for key in printcmdlist.keys():
+        t.add_row([
+                    key, 
+                    printcmdlist[key], 
+                 ])
+        
+    print (t)
 
 def signal_handler(sig, frame):
-    pc.printout("\nGoodbye!\n", pc.RED)
+    global api
+    
+    api.___printout___("\nGoodbye!\n", api.RED)
     sys.exit(0)
 
 
@@ -89,61 +67,60 @@ def completer(text, state):
         return None
 
 def _quit():
-    pc.printout("Goodbye!\n", pc.RED)
+    global api
+    
+    api.___printout___("Goodbye!\n", api.RED)
     sys.exit(0)
 
 def api_process(parms, readliner):
-    global commands
-    
-    api = instagent(parms.identity, 
+    global commands    
+    global api
+
+    api.initialize( parms.identity, 
+                    parms.defaultcount,
+                    parms.defaultmedia,
+                    parms.proxy,
+                    parms.cookies,
                     parms.file, 
                     parms.json, 
                     parms.command, 
                     parms.output, 
-                    parms.cookies, 
                     parms.timeout,
                     Path(__file__).parent.resolve()
-                    )
+                  )
 
     commands = {
-        'list':             cmdlist,
-        'help':             cmdlist,
-        'quit':             _quit,
-        'exit':             _quit,
-        'addrs':            api.get_addrs,
-        'cache':            api.clear_cache,
-        'captions':         api.get_captions,
-        "commentdata":      api.get_comment_data,
-        'comments':         api.get_total_comments,
-        'followers':        api.get_followers,
-        'followings':       api.get_followings,
-        'fwersemail':       api.get_fwersemail,
-        'fwingsemail':      api.get_fwingsemail,
-        'fwersnumber':      api.get_fwersnumber,
-        'fwingsnumber':     api.get_fwingsnumber,
-        'hashtags':         api.get_hashtags,
-        'info':             api.get_user_info,
-        'likes':            api.get_total_likes,
-        'mediatype':        api.get_media_type,
-        'photodes':         api.get_photo_description,
-        'photos':           api.get_user_photo,
-        'propic':           api.get_user_propic,
-        'stories':          api.get_user_stories,
-        'tagged':           api.get_people_tagged_by_user,
-        'target':           api.change_target,
-        'wcommented':       api.get_people_who_commented,
-        'wtagged':          api.get_people_who_tagged,
-        'timeout':          api.set_timeout,
+        'list'                  :   cmdlist,
+        'help'                  :   cmdlist,
+        'quit'                  :   _quit,
+        'exit'                  :   _quit,
+        'locations'             :   api.get_locations,
+        'cache'                 :   api.clear_cache,
+        'comments'              :   api.get_comments,
+        'likes'                 :   api.get_likes,
+        'captions'              :   api.get_captions,
+        'followers'             :   api.get_followers,
+        'followings'            :   api.get_followings,        
+        'detailedfollowers'     :   api.get_followers_detailed,
+        'detailedfollowings'    :   api.get_followings_detailed,
+        'hastags'               :   api.get_hashtags,
+        'hastagscounts'         :   api.get_hashtags_counts,        
+        'info'                  :   api.get_user_info,
+        'mediacounts'           :   api.get_all_media_counts,
+        'mediastore'            :   api.store_media,
+        'commenters'            :   api.get_people_who_commented,
+        'tagged'                :   api.get_people_who_tagged,
+        'newtarget'             :   api.change_target,
+        'timeout'               :   api.set_timeout,
     }
 
 
     signal.signal(signal.SIGINT, signal_handler)
     readliner.parse_and_bind("tab: complete")
     readliner.set_completer(completer)
-    
 
     if not parms.command:
-        printlogo()
+        api.printlogo()
 
     while True:
         if parms.command:
@@ -153,25 +130,25 @@ def api_process(parms, readliner):
             signal.signal(signal.SIGINT, signal_handler)
             readliner.parse_and_bind("tab: complete")
             readliner.set_completer(completer)
-            pc.printout("Run a command: ", pc.YELLOW)
-            cmd = input()
+            api.___printout___("Run a command: ", api.YELLOW)
+            cmd = api.___userInput___(commands.keys())
 
             _cmd = commands.get(cmd)
-
+        
         if _cmd:
             _cmd()
         elif cmd == "FILE=y":
-            api.set_write_file(True)
+            api.set_is_file(True)
         elif cmd == "FILE=n":
-            api.set_write_file(False)
+            api.set_is_file(False)
         elif cmd == "JSON=y":
-            api.set_json_dump(True)
+            api.set_is_json(True)
         elif cmd == "JSON=n":
-            api.set_json_dump(False)
+            api.set_is_json(False)
         elif cmd == "":
             print("")
         else:
-            pc.printout("Unknown command\n", pc.RED)
+            api.___printout___("Unknown command\n", api.RED)
 
         if parms.command:
             break
@@ -185,8 +162,12 @@ class parameters():
     output = None
     multi = None
     timeout = None
+    defaultcount = None
+    defaultmedia = None
+    proxy = None
 
-if __name__ == "__main__":       
+if __name__ == "__main__":
+    api = instagent()       
  
     parms = parameters()
     parser = argparse.ArgumentParser(description='Osintgram is a OSINT tool on Instagram. It offers an interactive shell '
@@ -199,6 +180,9 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output', help='where to store photos', action='store')
     parser.add_argument('-m', '--multi', help='multi targets', action='store_true')
     parser.add_argument('-t', '--timeout', help='input timeout in seconds', action='store')
+    parser.add_argument('-dc', '--defaultcount', help='defualt media counts for commands', action='store')
+    parser.add_argument('-dm', '--defaultmedia', help='defualt media type for commands', action='store')
+    parser.add_argument('-p', '--proxy', help='proxy for the app (example: http://username:password@147.123123.123:412345)', action='store')
     
     args = parser.parse_args()
     
@@ -210,15 +194,18 @@ if __name__ == "__main__":
     parms.output = os.environ.get("INSTAGENT_OUTPUT", args.output)
     parms.multi = os.environ.get("INSTAGENT_MULTI", args.multi)
     parms.timeout = os.environ.get("INSTAGENT_TIMEOUT", args.timeout)
+    parms.defaultcount = os.environ.get("INSTAGENT_DEFAULTCOUNT", args.defaultcount)
+    parms.defaultmedia = os.environ.get("INSTAGENT_DEFAULTMEDIA", args.defaultmedia)
+    parms.proxy = os.environ.get("INSTAGENT_PROXY", args.proxy)
     
     if os.name == 'nt':
         from pyreadline3 import Readline
         readliner = Readline()
-        pc.printout("Windows Detected!\n", pc.RED)
+        api.___printout___("Windows Detected!\n", api.RED)
     else:
         import gnureadline
         readliner = gnureadline    
-        pc.printout("Linux Detected!\n", pc.RED)
+        api.___printout___("Linux Detected!\n", api.RED)
     
     if parms.multi:
         if parms.command:
@@ -233,22 +220,22 @@ if __name__ == "__main__":
                     file.write("\n".join(str(item) for item in data))
                 
             except FileNotFoundError:
-                pc.printout('Error: file "config/targets.ini" not found!\n', pc.RED)
+                api.___printout___('Error: file "config/targets.ini" not found!\n', api.RED)
                 sys.exit(0)
             except Exception as e:
-                pc.printout("Error: {}\n".format(e), pc.RED)
+                api.___printout___("Error: {}\n".format(e), api.RED)
                 sys.exit(0)
                 
             for target in data:
-                pc.printout("*************************************************************************\n", pc.GREEN)            
-                pc.printout("Target: {}\n".format(target), pc.GREEN)            
-                pc.printout("*************************************************************************\n", pc.GREEN)
+                api.___printout___("*************************************************************************\n", api.GREEN)            
+                api.___printout___("Target: {}\n".format(target), api.GREEN)            
+                api.___printout___("*************************************************************************\n", api.GREEN)
                 parms.identity = target
                 api_process(parms, readliner)
-            pc.printout("All targets completed!\n", pc.RED)    
-            pc.printout("Goodbye!\n", pc.RED)
+            api.___printout___("All targets completed!\n", api.RED)    
+            api.___printout___("Goodbye!\n", api.RED)
         else:
-            pc.printout('Error: To use Multi Target (-m), a fixed Command (-c) needs to be passed too!\n', pc.RED)
+            api.___printout___('Error: To use Multi Target (-m), a fixed Command (-c) needs to be passed too!\n', api.RED)
             sys.exit(0)
     else:
         api_process(parms, readliner)
