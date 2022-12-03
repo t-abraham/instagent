@@ -13,7 +13,7 @@
 
 
 **Bug Fixes**
-- cookie issue (#3)
+- cookie issue [#3]
 
 ## 1.1
 
