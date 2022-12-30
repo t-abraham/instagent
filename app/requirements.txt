@@ -1,8 +1,4 @@
-requests==2.24.0
-requests-toolbelt==0.9.1
-geopy>=2.0.0
+geopy==2.3.0
+instagrapi==1.16.30
 prettytable==0.7.2
-instagram-private-api==1.6.0
-inputimeout==1.0.4
-gnureadline>=8.0.0; platform_system != "Windows"
-pyreadline==2.1; platform_system == "Windows"
+pyreadline3==3.4.1

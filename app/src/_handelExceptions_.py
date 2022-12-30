@@ -93,6 +93,7 @@ class __handelExceptions__(object):
                 self.___printout___('Feedback Required: {}'.format(message), self.RED)
         elif isinstance(e, PleaseWaitFewMinutes):
             self.___printout___('Waiting: {}'.format(e), self.RED)
+            
         raise e
         
 #%% Standalone Run
