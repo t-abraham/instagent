@@ -131,7 +131,10 @@ def api_process(parms, readliner):
             readliner.parse_and_bind("tab: complete")
             readliner.set_completer(completer)
             api.___printout___("Run a command: ", api.YELLOW)
-            cmd = api.___userInput___(commands.keys())
+            cmd = api.___userInput___(
+                                        answers=commands.keys(),
+                                        timeout=-1
+                                      )
 
             _cmd = commands.get(cmd)
         
